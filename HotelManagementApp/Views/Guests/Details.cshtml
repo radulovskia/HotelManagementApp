@@ -1,0 +1,33 @@
+﻿@model HotelManagementApp.Models.Guest
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Html.DisplayFor(model => model.Name)</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DateFrom)
+        </dt>
+
+        <dd>
+            <p>@Model.DateFrom.ToShortDateString()</p>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateTo)
+        </dt>
+
+        <dd>
+            <p>@Model.DateTo.ToShortDateString()</p>
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.GuestId }, new { @class = "btn btn-link" })
+    <input class="btn btn-link" type="button" value="Back" onclick="history.back()" />
+</p>

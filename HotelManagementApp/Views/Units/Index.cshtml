@@ -1,0 +1,77 @@
+﻿@model IEnumerable<HotelManagementApp.Models.Unit>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Units</h2>
+@if (User.IsInRole("Admin")) {
+<p>
+    @Html.ActionLink("Add New", "Create", new { }, new { @class = "btn btn-link"})
+</p>
+}
+<table class="table" id="unitsTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="col-md-3">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="col-md-3">
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td class="col-md-2">
+                    @Html.DisplayFor(modelItem => item.City.Name)
+                </td>
+                <td class="col-md-4">
+                    @Html.ActionLink("Details", "Details", new { id = item.UnitId }, new { @class = "btn btn-link" })
+                    @if (User.IsInRole("Admin"))
+                    {
+                    @Html.ActionLink("Add Room", "AddToUnit", new { id = item.UnitId }, new { @class = "btn btn-link" })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.UnitId }, new { @class = "btn btn-link" })
+                    <button class="btn btn-link js-delete" data-unit-id="@item.UnitId">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#unitsTable").DataTable();
+            $("#unitsTable .js-delete").on("click", function () {
+                var btn = $(this);
+                bootbox.confirm("Are you sure you want to delete this unit?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/Units/Delete/" + btn.attr("data-unit-id"),
+                            method: "GET",
+                            success: function () {
+                                table.row(btn.parents("tr")).remove().draw();
+                            },
+                            backdrop: true,
+                            error: function (err) { console.log(err);}
+                        })
+                    }
+                })
+            })
+        })
+    </script>
+}

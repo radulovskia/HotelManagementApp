@@ -1,0 +1,16 @@
+﻿@model HotelManagementApp.Models.AddToUnitModel
+@{
+    ViewBag.Title = "AddToUnit";
+}
+<br />
+<h2>Add Room To @ViewBag.UnitName</h2>
+
+@using (Html.BeginForm("AddToUnit", "Units"))
+{
+    <div class="form-group">
+        @Html.DropDownListFor(m => m.RoomId, new SelectList(Model.Rooms, "Id", "Number", new { @class = "form-control" }))
+    </div>
+    <button type="submit" class="btn btn-link">Submit</button>
+    <input class="btn btn-link" type="button" value="Back" onclick="history.back()" />
+    @Html.HiddenFor(m => m.UnitId)
+}

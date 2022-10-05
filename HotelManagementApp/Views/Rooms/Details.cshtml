@@ -1,0 +1,54 @@
+﻿@model HotelManagementApp.Models.Room
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Room no.@Html.DisplayFor(model => model.Number)</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Unit.Name),
+            @Html.DisplayNameFor(model => model.Unit.City.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Unit.Name),
+            @Html.DisplayFor(model => model.Unit.City.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Number)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)&euro;
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomArtUrl)
+        </dt>
+
+        <dd>
+            <img src="@Model.RoomArtUrl" class="hover" style="max-width:200px" />
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-link" })
+    }
+        <input class="btn btn-link" type="button" value="Back" onclick="history.back()" />
+    </p>

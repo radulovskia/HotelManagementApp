@@ -1,0 +1,17 @@
+﻿@model HotelManagementApp.Models.AddToRoomModel
+@{
+    ViewBag.Title = "AddToRoom";
+}
+
+<h2>Add Guest To Room @ViewBag.RoomNumber</h2>
+
+@using (Html.BeginForm("AddToRoom", "Rooms"))
+{
+    <div class="form-group">
+        @Html.DropDownListFor(m => m.GuestId, new SelectList(Model.Guests, "GuestId", "Name"), new { @class = "form-control col-md-10" })
+        @Html.ActionLink("New Guest", "../Guests/Create", new { }, new { @class = "btn btn-link" })
+    </div>
+    <button type="submit" class="btn btn-link">Submit</button>
+    <input class="btn btn-link" type="button" value="Back" onclick="history.back()" />
+    @Html.HiddenFor(m => m.RoomId)
+}

@@ -1,0 +1,96 @@
+﻿@model IEnumerable<HotelManagementApp.Models.Room>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Rooms</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Add New", "Create", new { }, new { @class = "btn btn-link" })
+    </p>
+}
+<table class="table" id="roomsTable">
+    <thead>
+        <tr>
+            @if (User.IsInRole("Staff"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Guest)
+                </th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.Unit.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Unit.City.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoomArtUrl)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (User.IsInRole("Staff"))
+                {
+                    <td class="col-md-2">
+                        @if (DateTime.Now.CompareTo(item.Guest.DateFrom) > 0 &&
+                            DateTime.Now.CompareTo(item.Guest.DateTo) < 0){ 
+                            @Html.DisplayFor(modelItem => item.Guest.Name) 
+                        }
+                    </td>
+                }
+                <td class="col-md-2">
+                    @Html.DisplayFor(modelItem => item.Unit.Name)
+                </td>
+                <td class="col-md-2">
+                    @Html.DisplayFor(modelItem => item.Unit.City.Name)
+                </td>
+                <td class="col-md-2">
+                    <img src="@item.RoomArtUrl" style="max-width:200px" />
+                </td>
+                <td class="col-md-4">
+                    @if (User.IsInRole("Staff"))
+                    {
+                        @Html.ActionLink("Edit Guest", "AddToRoom", new { id = item.Id }, new { @class = "btn btn-link" })
+                    }
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-link" })
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-link" })
+                        <button class="btn btn-link js-delete" data-room-id="@item.Id">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#roomsTable").DataTable();
+            $("#roomsTable .js-delete").on("click", function () {
+                var btn = $(this);
+                bootbox.confirm("Are you sure you want to delete this room?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/Rooms/Delete/" + btn.attr("data-room-id"),
+                            method: "GET",
+                            success: function () {
+                                table.row(btn.parents("tr")).remove().draw();
+                            },
+                            error: function (err) { console.log(err); }
+                        })
+                    }
+                })
+            })
+        })
+    </script>
+}

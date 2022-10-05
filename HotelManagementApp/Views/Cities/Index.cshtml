@@ -1,0 +1,71 @@
+﻿@model IEnumerable<HotelManagementApp.Models.City>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Cities</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Add New", "Create", new { }, new { @class = "btn btn-link" })
+    </p>
+}
+<table class="table" id="citiesTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="col-md-1">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="col-md-8">
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td class="col-md-3">
+                    @Html.ActionLink("Details", "Details", new { id = item.CityId }, new { @class = "btn btn-link" })
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.CityId }, new { @class = "btn btn-link" })
+                        <button class="btn btn-link js-delete" data-city-id="@item.CityId">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#citiesTable").DataTable();
+            $("#citiesTable .js-delete").on("click", function () {
+                var btn = $(this);
+                bootbox.confirm("Are you sure you want to delete this city?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/Cities/Delete/" + btn.attr("data-city-id"),
+                            method: "GET",
+                            success: function () {
+                                table.row(btn.parents("tr")).remove().draw();
+                            },
+                            error: function (err) { console.log(err); }
+                        })
+                    }
+                })
+            })
+        })
+    </script>
+}
